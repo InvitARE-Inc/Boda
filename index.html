@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boda Gaby & Erick</title>
+    <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --gold: #bfa37e;
+            --dark: #1a1a1a;
+            --white: #ffffff;
+            --glass: rgba(255, 255, 255, 0.05);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Montserrat', sans-serif; background: var(--dark); color: var(--white); text-align: center; overflow-x: hidden; }
+
+        /* HERO */
+        .hero { height: 100vh; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+        .carousel-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+        .carousel-slide { position: absolute; width: 100%; height: 100%; background-size: cover; background-position: center; opacity: 0; transition: opacity 2s; }
+        .carousel-slide.active { opacity: 1; }
+        .overlay { position: absolute; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2; }
+        .hero-content { position: relative; z-index: 3; padding: 20px; }
+        h1 { font-family: 'Alex Brush', cursive; font-size: clamp(3.5rem, 12vw, 6rem); color: var(--gold); margin: 10px 0; }
+        .parents { font-size: 0.85rem; margin: 20px 0; line-height: 1.8; opacity: 0.9; text-transform: uppercase; letter-spacing: 1px; }
+        .parents strong { color: var(--gold); display: block; }
+
+        /* CONTADOR */
+        .countdown { display: flex; gap: 8px; justify-content: center; margin: 30px 0; flex-wrap: wrap; }
+        .time-box { background: var(--glass); padding: 12px; border-radius: 12px; min-width: 75px; border: 1px solid rgba(191, 163, 126, 0.3); backdrop-filter: blur(5px); }
+        .time-box span { display: block; font-size: 1.6rem; font-weight: 600; color: var(--gold); }
+        .time-label { font-size: 0.6rem; letter-spacing: 1px; text-transform: uppercase; }
+        .date-line { border-top: 1px solid var(--gold); border-bottom: 1px solid var(--gold); padding: 12px 30px; display: inline-block; letter-spacing: 4px; font-weight: 400; text-transform: uppercase; }
+
+        /* SECCIONES */
+        .section { padding: 80px 20px; }
+        .section-title { font-family: 'Alex Brush', cursive; font-size: 3.5rem; color: var(--gold); margin-bottom: 30px; }
+        .card { background: var(--glass); border-radius: 20px; padding: 40px 25px; max-width: 600px; margin: 0 auto; border: 1px solid rgba(191, 163, 126, 0.2); }
+        
+        .btn { display: inline-flex; align-items: center; gap: 10px; background: var(--gold); color: #fff; padding: 14px 30px; border-radius: 50px; text-decoration: none; font-weight: 600; margin-top: 20px; transition: 0.3s; text-transform: uppercase; font-size: 0.85rem; border:none; cursor: pointer; }
+        .btn:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(191, 163, 126, 0.3); }
+
+        /* ITINERARIO */
+        .itinerary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 25px; text-align: left; max-width: 550px; margin: 0 auto; }
+        .event { border-left: 2px solid var(--gold); padding-left: 15px; }
+        .event-time { font-weight: 600; color: var(--gold); font-size: 1.1rem; }
+        .event-name { font-size: 0.9rem; opacity: 0.9; }
+
+        /* GALERÍA INTERACTIVA */
+        .gallery-wrapper { max-width: 100%; margin: 0 auto; overflow: hidden; position: relative; padding: 40px 0; cursor: ew-resize; }
+        .gallery-container { display: flex; gap: 20px; padding: 0 50px; width: max-content; transition: transform 0.2s ease-out; will-change: transform; }
+        .gallery-item { flex: 0 0 300px; height: 400px; border-radius: 15px; overflow: hidden; border: 1px solid rgba(191, 163, 126, 0.3); pointer-events: none; }
+        .gallery-item img { width: 100%; height: 100%; object-fit: cover; }
+
+        footer { padding: 60px; font-size: 0.8rem; opacity: 0.5; letter-spacing: 3px; }
+    </style>
+</head>
+<body>
+
+    <section class="hero">
+        <div class="carousel-container">
+            <div class="carousel-slide active" style="background-image: url('img/imagen0.jpg');"></div>
+            <div class="carousel-slide" style="background-image: url('img/imagen1.jpg');"></div>
+            <div class="carousel-slide" style="background-image: url('img/Imagen2.jpg');"></div>
+            <div class="carousel-slide" style="background-image: url('img/Imagen3.jpg');"></div>
+        </div>
+        <div class="overlay"></div>
+        <div class="hero-content">
+            <p style="letter-spacing: 5px;">¡NOS CASAMOS!</p>
+            <h1>Gaby & Erick</h1>
+            <div class="parents">
+                CON LA BENDICIÓN DE NUESTROS PADRES:
+                <strong>Juana Mayorga & Wilfrido Olvera</strong>
+                <strong>Lorena Farfán & Saúl Jiménez</strong>
+            </div>
+            <div class="countdown">
+                <div class="time-box"><span id="days">00</span><div class="time-label">Días</div></div>
+                <div class="time-box"><span id="hours">00</span><div class="time-label">Hrs</div></div>
+                <div class="time-box"><span id="mins">00</span><div class="time-label">Min</div></div>
+                <div class="time-box"><span id="secs">00</span><div class="time-label">Seg</div></div>
+            </div>
+            <div class="date-line">Sábado 28 de Marzo, 2026</div>
+        </div>
+    </section>
+
+    <section class="section">
+        <h2 class="section-title">Ubicación</h2>
+        <div class="card">
+            <i data-lucide="map-pin" color="#bfa37e" size="40"></i>
+            <h3 style="margin-top: 15px;">Ex-Hacienda Coscotitlán</h3>
+            <p style="opacity: 0.8;">Pachuca de Soto, Hidalgo</p>
+            <a href="https://www.google.com/maps/place/Asados+Don+Abel/@20.1018199,-98.752037,17z/data=!3m1!4b1!4m6!3m5!1s0x85d1a0ad8c99e78d:0x523a712aa862ff4!8m2!3d20.1018199!4d-98.752037!16s%2Fg%2F1pp2wyc9h?entry=ttu&g_ep=EgoyMDI2MDMwMS4xIKXMDSoASAFQAw%3D%3D" target="_blank" class="btn">VER MAPA RECEPCIÓN</a>
+            
+            <hr style="margin: 35px 0; opacity: 0.1;">
+            
+            <i data-lucide="car" color="#bfa37e" size="32"></i>
+            <h4 style="font-size: 0.9rem; color: var(--gold); margin-top: 10px; letter-spacing: 1px;">ESTACIONAMIENTO</h4>
+            <p style="font-size: 0.85rem; margin-top: 10px; line-height: 1.5;">La Ex-Hacienda no cuenta con estacionamiento propio, podrás dejar tu auto en:</p>
+            <p><strong>Asados Don Abel</strong></p>
+            <a href="https://www.google.com/maps/place/Asados+Don+Abel/@20.1018199,-98.752037,17z/data=!3m1!4b1!4m6!3m5!1s0x85d1a0ad8c99e78d:0x523a712aa862ff4!8m2!3d20.1018199!4d-98.752037!16s%2Fg%2F1pp2wyc9h?entry=ttu&g_ep=EgoyMDI2MDMwMS4xIKXMDSoASAFQAw%3D%3D" target="_blank" class="btn" style="background: transparent; border: 1px solid var(--gold); color: var(--gold); margin-top: 10px;">VER MAPA ESTACIONAMIENTO</a>
+            <p style="font-size: 0.8rem; opacity: 0.7; margin-top: 15px; font-style: italic;">* Habrá una camioneta a tu disposición para el traslado al lugar.</p>
+        </div>
+    </section>
+
+    <section class="section" style="background: rgba(0,0,0,0.2);">
+        <h2 class="section-title">Itinerario</h2>
+        <div class="itinerary-grid">
+            <div class="event"><p class="event-time">3:30 PM</p><p class="event-name">Recepción</p></div>
+            <div class="event"><p class="event-time">4:00 PM</p><p class="event-name">Ceremonia</p></div>
+            <div class="event"><p class="event-time">5:00 PM</p><p class="event-name">Coctel de Bienvenida</p></div>
+            <div class="event"><p class="event-time">6:00 PM</p><p class="event-name">Banquete</p></div>
+            <div class="event"><p class="event-time">8:00 PM</p><p class="event-name">Baile de Novios</p></div>
+            <div class="event"><p class="event-time">2:00 AM</p><p class="event-name">Fin de la Fiesta</p></div>
+        </div>
+    </section>
+
+    <section class="section">
+        <h2 class="section-title">Mesa de Regalos</h2>
+        <div class="card">
+            <i data-lucide="gift" color="#bfa37e" size="40"></i>
+            <p style="margin: 20px 0;">Tu presencia es nuestro mejor regalo, pero si deseas obsequiarnos algo:</p>
+            <p><strong>CÓDIGO LIVERPOOL: 51917310</strong></p>
+            <a href="https://mesaderegalos.liverpool.com.mx/milistaderegalos/51917310" target="_blank" class="btn">VER MESA DE REGALOS</a>
+        </div>
+    </section>
+
+    <section class="section" style="background: rgba(0,0,0,0.2);">
+        <h2 class="section-title">Confirmación</h2>
+        <div class="card">
+            <p>Favor de confirmar su asistencia antes del 1 de Marzo.</p>
+            <a href="https://wa.me/5217711234567" class="btn" style="background: #25d366;" target="_blank">
+                <i data-lucide="message-circle"></i> WHATSAPP
+            </a>
+        </div>
+    </section>
+
+    <section class="section" style="padding-bottom: 100px;">
+        <h2 class="section-title">Galeria de fotos</h2>
+        <div class="gallery-wrapper" id="wrapper">
+            <div class="gallery-container" id="gallery">
+                <div class="gallery-item"><img src="img/Imagen4.jpg"></div>
+                <div class="gallery-item"><img src="img/Imagen5.jpg"></div>
+                <div class="gallery-item"><img src="img/Imagen6.jpg"></div>
+                <div class="gallery-item"><img src="img/Imagen7.jpg"></div>
+                <div class="gallery-item"><img src="img/Imagen8.jpg"></div>
+                <div class="gallery-item"><img src="img/Imagen9.jpg"></div>
+                <div class="gallery-item"><img src="img/Imagen10.jpg"></div>
+                <div class="gallery-item"><img src="img/Imagen11.jpg"></div>
+                <div class="gallery-item"><img src="img/Imagen12.jpg"></div>
+                <div class="gallery-item"><img src="img/Imagen13.jpg"></div>
+            </div>
+        </div>
+        <p style="font-size: 0.7rem; opacity: 0.4;">MUEVE EL MOUSE PARA EXPLORAR</p>
+    </section>
+
+    <footer>GABY & ERICK | 28.03.2026</footer>
+
+    <script>
+        lucide.createIcons();
+
+        // 1. Carrusel Hero
+        const heroSlides = document.querySelectorAll('.carousel-slide');
+        let heroIndex = 0;
+        setInterval(() => {
+            heroSlides[heroIndex].classList.remove('active');
+            heroIndex = (heroIndex + 1) % heroSlides.length;
+            heroSlides[heroIndex].classList.add('active');
+        }, 5000);
+
+        // 2. Galería con Mouse
+        const wrapper = document.getElementById('wrapper');
+        const gallery = document.getElementById('gallery');
+        wrapper.addEventListener('mousemove', (e) => {
+            const { width, left } = wrapper.getBoundingClientRect();
+            const mouseX = e.clientX - left;
+            const walk = mouseX / width;
+            const maxMove = gallery.offsetWidth - width;
+            const moveX = walk * maxMove;
+            gallery.style.transform = `translateX(-${moveX}px)`;
+        });
+
+        // 3. Contador con Segundos
+        const weddingDate = new Date("March 28, 2026 15:30:00").getTime();
+        function updateClock() {
+            const now = new Date().getTime();
+            const diff = weddingDate - now;
+            if (diff > 0) {
+                document.getElementById('days').innerText = Math.floor(diff / (1000 * 60 * 60 * 24)).toString().padStart(2, '0');
+                document.getElementById('hours').innerText = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2, '0');
+                document.getElementById('mins').innerText = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
+                document.getElementById('secs').innerText = Math.floor((diff % (1000 * 60)) / 1000).toString().padStart(2, '0');
+            }
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+    </script>
+</body>
+</html>
