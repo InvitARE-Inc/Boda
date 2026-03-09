@@ -1,382 +1,517 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Boda Gaby & Erick</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boda Gaby & Erick</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
-<script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Montserrat:wght@200;300;400;600&family=Playfair+Display:ital,wght@0,400;1,700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
 
-<style>
-:root {
-    --gold: #bfa37e;
-    --dark: #1a1a1a;
-    --white: #ffffff;
-    --glass: rgba(255,255,255,0.05);
+    <style>
+        :root {
+            --sepia-dark: #3e2723;
+            --sepia-medium: #5d4037;
+            --gold-gradient: linear-gradient(45deg, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
+            --bg-paper: #f4ece2;
+            --olive: #a3ad97;
+            --border-sepia: rgba(93, 64, 55, 0.2);
+            /* Color base para los puntos dorados */
+            --gold-point: #bf953f; 
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-paper);
+            background-image: url('https://www.transparenttextures.com/patterns/paper.png');
+            color: var(--sepia-dark);
+            text-align: center;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+            position: relative; /* Necesario para las capas superpuestas */
+        }
+
+        /* --- CAPA SUPERPUESTA DE HOJAS DORADAS GLOBAL --- */
+        body::before {
+            content: 
+                "";
+            position: 
+                fixed; /* Flota sobre el contenido al hacer scroll */
+            top: 
+                0;
+            left: 
+                0;
+            width: 
+                100%;
+            height: 
+                100%;
+            /* Imagen de patrón de hojas doradas sutil */
+            background-image: 
+                url('./rosa.png'); 
+            background-repeat: 
+                repeat;
+            background-position: 
+                top center;
+            /* Filtro para dar tono dorado y suavizar */
+            filter: 
+                sepia(100%) saturate(500%) hue-rotate(10deg) brightness(90%) opacity(0.1); 
+            z-index: 
+                10; /* Por encima de la mayoría de elementos */
+            pointer-events: 
+                none; /* No interfiere con los clics */
+        }
+
+        /* --- CONTENEDOR PARA PUNTOS DORADOS (CONFETI) --- */
+        #gold-points-container {
+            position: 
+                fixed;
+            top: 
+                0;
+            left: 
+                0;
+            width: 
+                100%;
+            height: 
+                100%;
+            z-index: 
+                11; /* Ligeramente por encima de las hojas */
+            pointer-events: 
+                none;
+        }
+
+        .gold-point {
+            position: 
+                absolute;
+            background-color: 
+                var(--gold-point);
+            border-radius: 
+                50%;
+            opacity: 
+                0.6;
+            box-shadow: 
+                0 0 5px rgba(191, 149, 63, 0.3);
+        }
+
+        /* --- ANIMACIONES --- */
+        @keyframes gold-shine {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .gold-text {
+            font-family: 'Alex Brush', cursive;
+            background: var(--gold-gradient);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gold-shine 4s linear infinite;
+        }
+
+        .reveal { opacity: 0; transform: translateY(20px); transition: 1s all ease; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        /* --- SECCIONES --- */
+        .section { padding: 60px 20px; max-width: 800px; margin: 0 auto; position: relative; z-index: 1; }
+        .section-title { font-family: 'Playfair Display', serif; font-size: 2rem; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 30px; }
+        .ornament { width: 120px; margin: 10px auto; opacity: 0.6; }
+
+        /* --- HERO --- */
+        .hero { height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(
+        rgba(244, 236, 226, 0.35), 
+        rgba(244, 236, 226, 0.35)),url('img/Imagen0.jpg') center/cover; position: relative; z-index: 1; }
+        .hero h1 { font-size: clamp(4rem, 15vw, 8rem); line-height: 1; }
+
+        /* --- CONTADOR --- */
+        .countdown { display: flex; gap: 10px; justify-content: center; margin: 40px 0; }
+        .time-box { border: 1px solid var(--border-sepia); padding: 10px; min-width: 70px; background: rgba(255,255,255,0.4); }
+        .time-box span { display: block; font-size: 1.4rem; font-weight: 300; }
+        .time-label { font-size: 0.6rem; text-transform: uppercase; opacity: 0.7; }
+
+        /* --- PADRES --- */
+        .parents-box { line-height: 2; letter-spacing: 1px; font-size: 0.9rem; }
+        .parents-box strong { color: var(--sepia-medium); display: block; font-size: 1rem; margin-top: 5px; }
+
+        /* --- ITINERARIO (ESTILO IMAGEN) --- */
+        .itinerary-container { position: relative; margin: 40px auto; }
+        .itinerary-line { position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; background: var(--olive); transform: translateX(-50%); }
+        .itinerary-item { display: flex; align-items: center; margin-bottom: 40px; position: relative; width: 100%; }
+        .itinerary-content { width: 45%; padding: 0 10px; }
+        .itinerary-item:nth-child(even) { flex-direction: row-reverse; }
+        .itinerary-item:nth-child(even) .itinerary-content { text-align: left; }
+        .itinerary-item:nth-child(odd) .itinerary-content { text-align: right; }
+        .dot { width: 12px; height: 12px; background: var(--olive); border-radius: 50%; position: absolute; left: 50%; transform: translateX(-50%); z-index: 2; }
+
+        /* --- DRESS CODE --- */
+        .dress-card { background: white; padding: 30px; border: 1px solid var(--border-sepia); margin-bottom: 20px; position: relative; }
+        .color-circle { width: 30px; height: 30px; border-radius: 50%; display: inline-block; margin: 5px; position: relative; border: 1px solid #ddd; }
+        .no-color::after { content: '✕'; color: #cc0000; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-weight: bold; }
+
+        /* --- SUGERENCIAS OUTFIT --- */
+        .outfit-img { width: 100%; max-width: 400px; border-radius: 5px; filter: sepia(0.2); margin-top: 15px; }
+
+        /* --- BOTONES --- */
+        .btn { display: inline-block; background: var(--sepia-dark); color: white; padding: 12px 25px; text-decoration: none; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; margin: 10px 5px; transition: 0.3s; border: none; cursor: pointer; position: relative; z-index: 20; /* Asegurar clics sobre el overlay */ }
+        .btn-olive { background: var(--olive); }
+
+        /* --- CARRUSEL --- */
+        .gallery-track { display: flex; gap: 15px; animation: scrollGallery 40s linear infinite; }
+        .gallery-item { flex: 0 0 250px; height: 350px; overflow: hidden; border: 1px solid var(--border-sepia); }
+        .gallery-item img { width: 100%; height: 100%; object-fit: cover; }
+        @keyframes scrollGallery { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+        @media (max-width: 600px) { .itinerary-content { font-size: 0.8rem; } }
+        
+        /* --- BOTÓN DE MÚSICA FLOTANTE --- */
+#music-control {
+    position: 
+        fixed;
+    bottom: 
+        30px;
+    right: 
+        30px;
+    width: 
+        50px;
+    height: 
+        50px;
+    background: 
+        var(--gold-gradient);
+    border-radius: 
+        50%;
+    display: 
+        flex;
+    align-items: 
+        center;
+    justify-content: 
+        center;
+    box-shadow: 
+        0 4px 15px rgba(0,0,0,0.2);
+    cursor: 
+        pointer;
+    z-index: 
+        20000; 
+
+        /* Por encima de los puntos dorados */
+    transition: 
+        transform 0.3s ease;
 }
 
-*{margin:0;padding:0;box-sizing:border-box}
-
-body{
-    font-family:'Montserrat',sans-serif;
-    background:var(--dark);
-    color:var(--white);
-    text-align:center;
-    overflow-x:hidden;
+#music-control:hover {
+    transform: 
+        scale(1.1);
 }
 
-/* HERO */
-.hero{
-    height:100vh;
-    position:relative;
-    overflow:hidden;
-    display:flex;
-    align-items:center;
-    justify-content:center;
+#music-icon {
+    color: 
+        var(--sepia-dark);
+    width: 
+        24px;
 }
 
-.carousel-container{
-    position:absolute;
-    width:100%;
-    height:100%;
-    z-index:1;
+/* Animación cuando la música suena */
+.music-playing {
+    animation: 
+        pulse 2s infinite;
 }
 
-.carousel-slide{
-    position:absolute;
-    width:100%;
-    height:100%;
-    background-size:cover;
-    background-position:center;
-    opacity:0;
-    transition:opacity 2s ease;
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(191, 149, 63, 0.7); }
+    70% { box-shadow: 0 0 0 15px rgba(191, 149, 63, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(191, 149, 63, 0); }
 }
-
-.carousel-slide.active{opacity:1}
-
-.overlay{
-    position:absolute;
-    width:100%;
-    height:100%;
-    background:rgba(0,0,0,0.5);
-    z-index:2;
-}
-
-.hero-content{
-    position:relative;
-    z-index:3;
-    padding:20px;
-}
-
-h1{
-    font-family:'Alex Brush',cursive;
-    font-size:clamp(3.5rem,12vw,6rem);
-    color:var(--gold);
-    margin:10px 0;
-}
-
-.parents{
-    font-size:0.85rem;
-    margin:20px 0;
-    line-height:1.8;
-    opacity:0.9;
-    text-transform:uppercase;
-    letter-spacing:1px;
-}
-
-.parents strong{
-    color:var(--gold);
-    display:block;
-}
-
-/* CONTADOR */
-.countdown{
-    display:flex;
-    gap:8px;
-    justify-content:center;
-    margin:30px 0;
-    flex-wrap:wrap;
-}
-
-.time-box{
-    background:var(--glass);
-    padding:12px;
-    border-radius:12px;
-    min-width:75px;
-    border:1px solid rgba(191,163,126,0.3);
-    backdrop-filter:blur(5px);
-}
-
-.time-box span{
-    display:block;
-    font-size:1.6rem;
-    font-weight:600;
-    color:var(--gold);
-}
-
-.time-label{
-    font-size:0.6rem;
-    letter-spacing:1px;
-    text-transform:uppercase;
-}
-
-.date-line{
-    border-top:1px solid var(--gold);
-    border-bottom:1px solid var(--gold);
-    padding:12px 30px;
-    display:inline-block;
-    letter-spacing:4px;
-    text-transform:uppercase;
-}
-
-/* SECCIONES */
-.section{padding:80px 20px}
-
-.section-title{
-    font-family:'Alex Brush',cursive;
-    font-size:3.5rem;
-    color:var(--gold);
-    margin-bottom:30px;
-}
-
-.card{
-    background:var(--glass);
-    border-radius:20px;
-    padding:40px 25px;
-    max-width:600px;
-    margin:0 auto;
-    border:1px solid rgba(191,163,126,0.2);
-}
-
-.btn{
-    display:inline-flex;
-    align-items:center;
-    gap:10px;
-    background:var(--gold);
-    color:#fff;
-    padding:14px 30px;
-    border-radius:50px;
-    text-decoration:none;
-    font-weight:600;
-    margin-top:20px;
-    transition:0.3s;
-    text-transform:uppercase;
-    font-size:0.85rem;
-    border:none;
-    cursor:pointer;
-}
-
-.btn:hover{
-    transform:translateY(-3px);
-    box-shadow:0 5px 15px rgba(191,163,126,0.3);
-}
-
-/* ITINERARIO */
-.itinerary-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
-    gap:25px;
-    text-align:left;
-    max-width:550px;
-    margin:0 auto;
-}
-
-.event{
-    border-left:2px solid var(--gold);
-    padding-left:15px;
-}
-
-.event-time{
-    font-weight:600;
-    color:var(--gold);
-    font-size:1.1rem;
-}
-
-.event-name{opacity:0.9}
-
-/* GALERÍA AUTOMÁTICA */
-.gallery-wrapper{
-    overflow:hidden;
-    padding:40px 0;
-}
-
-.gallery-track{
-    display:flex;
-    gap:20px;
-    width:max-content;
-    animation:scrollGallery 40s linear infinite;
-}
-
-.gallery-item{
-    flex:0 0 300px;
-    height:400px;
-    border-radius:15px;
-    overflow:hidden;
-    border:1px solid rgba(191,163,126,0.3);
-}
-
-.gallery-item img{
-    width:100%;
-    height:100%;
-    object-fit:cover;
-}
-
-@keyframes scrollGallery{
-    from{transform:translateX(0)}
-    to{transform:translateX(-50%)}
-}
-
-.gallery-wrapper:hover .gallery-track{
-    animation-play-state:paused;
-}
-
-footer{
-    padding:60px;
-    font-size:0.8rem;
-    opacity:0.5;
-    letter-spacing:3px;
-}
-</style>
+    </style>
 </head>
-
 <body>
-
-<!-- HERO -->
-<section class="hero">
-<div class="carousel-container">
-<div class="carousel-slide active" style="background-image:url('img/Imagen0.jpg')"></div>
-<div class="carousel-slide" style="background-image:url('img/Imagen1.jpg')"></div>
-<div class="carousel-slide" style="background-image:url('img/Imagen2.jpg')"></div>
-<div class="carousel-slide" style="background-image:url('img/Imagen3.jpg')"></div>
+<div id="music-control" onclick="toggleMusic()">
+    <i data-lucide="music" id="music-icon"></i>
+    <audio id="background-music" loop autoplay>
+        <source src="./musica.mp3" type="audio/mpeg">
+    </audio>
 </div>
-<div class="overlay"></div>
+    <div id="gold-points-container"></div>
 
-<div class="hero-content">
-<p style="letter-spacing:5px;">¡NOS CASAMOS!</p>
-<h1>Gaby & Erick</h1>
+    <section class="hero">
+        <div class="reveal active">
+            <p style="letter-spacing: 5px; font-weight: 300;">¡NOS CASAMOS!</p>
+            <h1 class="gold-text">Gaby & Erick</h1>
+            <div class="countdown">
+                <div class="time-box"><span id="days">00</span><div class="time-label">Días</div></div>
+                <div class="time-box"><span id="hours">00</span><div class="time-label">Hrs</div></div>
+                <div class="time-box"><span id="mins">00</span><div class="time-label">Min</div></div>
+                <div class="time-box"><span id="secs">00</span><div class="time-label">Seg</div></div>
+            </div>
+            <p style="font-family: 'Playfair Display'; font-style: italic; border-top: 1px solid var(--sepia-medium); border-bottom: 1px solid var(--sepia-medium); padding: 10px 0;">Sábado 28 de Marzo, 2026</p>
+        </div>
+    </section>
 
-<div class="parents">
-CON LA BENDICIÓN DE NUESTROS PADRES:
-<strong>Juana Mayorga & Wilfrido Olvera</strong>
-<strong>Lorena Farfán & Saúl Jiménez</strong>
-</div>
+    <section class="section reveal">
+        <h2 class="section-title">Nuestros Padres</h2>
+        <img src="https://cdn-icons-png.flaticon.com/512/633/633600.png" class="ornament">
+        <div class="parents-box">
+            <p style="font-size: 0.7rem; letter-spacing: 2px;">PADRES DE LA NOVIA</p>
+            <strong>Sra. Juana Mayorga Máximo</strong>
+            <strong>Sr. Wilfrido Germán Olvera Hernández</strong>
+            <div style="margin: 20px 0; font-size: 1.2rem;">♥</div>
+            <p style="font-size: 0.7rem; letter-spacing: 2px;">PADRES DEL NOVIO</p>
+            <strong>Sra. Lorena Farfán Baca</strong>
+            <strong>Sr. Saúl Jiménez Morales</strong>
+        </div>
+    </section>
 
-<div class="countdown">
-<div class="time-box"><span id="days">00</span><div class="time-label">Días</div></div>
-<div class="time-box"><span id="hours">00</span><div class="time-label">Hrs</div></div>
-<div class="time-box"><span id="mins">00</span><div class="time-label">Min</div></div>
-<div class="time-box"><span id="secs">00</span><div class="time-label">Seg</div></div>
-</div>
+    <section class="section reveal">
+        <h2 class="section-title">Recepción</h2>
+        <div class="dress-card">
+            <i data-lucide="map-pin" color="#3e2723" size="35"></i>
+            <h3 style="margin-top:10px;">Ex-Hacienda Coscotitlán, 4 2 0 8 6</h3>
+            <p style="font-size: 0.85rem; margin-bottom: 15px;">Pachuca de Soto, Hidalgo</p>
+            <a href="https://maps.app.goo.gl/cWyXUuc8q6SfgFZ97" target="_blank" class="btn">Mapa Recepción</a>
+            <hr style="margin: 30px 0; opacity: 0.1;">
+            <i data-lucide="car" color="#3e2723" size="30"></i>
+            <h4 style="font-size: 0.8rem; margin-top:10px;">ESTACIONAMIENTO: Asados Don Abel</h4>
+            <p style="font-size: 0.75rem; font-style: italic; margin-bottom: 15px;">Habrá traslado exclusivo al evento</p>
+            <a href="https://maps.app.goo.gl/yZew5ntG6FJ3tGNN9" target="_blank" class="btn" style="background:transparent; border:1px solid var(--sepia-dark); color:var(--sepia-dark);">Mapa Estacionamiento</a>
+        </div>
+    </section>
 
-<div class="date-line">Sábado 28 de Marzo, 2026</div>
-</div>
+    <section class="section reveal">
+        <h2 class="section-title">Itinerario</h2>
+        <div class="itinerary-container">
+            <div class="itinerary-line"></div>
+            <div class="itinerary-item">
+                <div class="itinerary-content"><strong>3:30 PM</strong><br>RECEPCIÓN</div>
+                <div class="dot"></div>
+                <div class="itinerary-content"><i data-lucide="heart" size="20"></i></div>
+            </div>
+            <div class="itinerary-item">
+                <div class="itinerary-content"><i data-lucide="gem" size="20"></i></div>
+                <div class="dot"></div>
+                <div class="itinerary-content"><strong>4:00 PM</strong><br>CEREMONIA</div>
+            </div>
+            <div class="itinerary-item">
+                <div class="itinerary-content"><strong>5:00 PM</strong><br>COCTEL DE BIENVENIDA</div>
+                <div class="dot"></div>
+                <div class="itinerary-content"><i data-lucide="glass-water" size="20"></i></div>
+            </div>
+            <div class="itinerary-item">
+                <div class="itinerary-content"><i data-lucide="utensils" size="20"></i></div>
+                <div class="dot"></div>
+                <div class="itinerary-content"><strong>6:00 PM</strong><br>BANQUETE</div>
+            </div>
+            <div class="itinerary-item">
+                <div class="itinerary-content"><strong>8:00 PM</strong><br>BAILE DE NOVIOS</div>
+                <div class="dot"></div>
+                <div class="itinerary-content"><i data-lucide="music" size="20"></i></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" style="background:rgba(0,0,0,0.1);">
+    <h2 class="section-title">Código de Vestimenta</h2>
+    <p style="letter-spacing: 2px; margin-bottom: 20px; font-weight: 600;">FORMAL COCKTAIL JARDÍN</p>
+    
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; max-width: 900px; margin: 0 auto;">
+        
+        <div class="card" style="padding: 30px;">
+            <h3 style="letter-spacing: 3px; border-bottom: 1px solid var(--gold); display: inline-block; margin-bottom: 15px;">HOMBRES</h3>
+            <p style="font-size: 0.8rem; font-weight: 600; margin-bottom: 10px;">POR FAVOR <span style="color: #ff4d4d;">NO</span> USAR COLOR:</p>
+            <div style="margin-bottom: 15px;">
+                <span title="Azul" style="display:inline-block; width:35px; height:35px; border-radius:50%; background:#1a237e; border: 2px solid #ff4d4d; position:relative; margin: 0 5px;"><small style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); color:white;">✕</small></span>
+                <span title="Beige" style="display:inline-block; width:35px; height:35px; border-radius:50%; background:#f5f5dc; border: 2px solid #ff4d4d; position:relative; margin: 0 5px;"><small style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); color:black;">✕</small></span>
+                <span title="Café" style="display:inline-block; width:35px; height:35px; border-radius:50%; background:#4e342e; border: 2px solid #ff4d4d; position:relative; margin: 0 5px;"><small style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); color:white;">✕</small></span>
+            </div>
+            <p style="font-size: 0.75rem; opacity: 0.8; margin-bottom: 20px;">AZUL, BEIGE, CAFÉ (Reservados para el evento)</p>
+            
+            <p style="font-size: 0.8rem; font-weight: 600; margin-bottom: 10px;">TE SUGERIMOS TRAJES:</p>
+            <div style="margin-bottom: 15px;">
+                <span style="display:inline-block; width:25px; height:25px; border-radius:50%; background:#9e9e9e; margin: 0 3px;"></span>
+                <span style="display:inline-block; width:25px; height:25px; border-radius:50%; background:#8eb085; margin: 0 3px;"></span>
+                <span style="display:inline-block; width:25px; height:25px; border-radius:50%; background:#c5cae9; margin: 0 3px;"></span>
+                <span style="display:inline-block; width:25px; height:25px; border-radius:50%; background:#ffcc80; margin: 0 3px;"></span>
+                <span style="display:inline-block; width:25px; height:25px; border-radius:50%; background:#f8bbd0; margin: 0 3px;"></span>
+            </div>
+            <p style="font-size: 0.75rem; font-style: italic;">Gris, verde o tonos pastel. Camisa neutra. No tenis.</p>
+        </div>
+
+        <div class="card" style="padding: 30px;">
+            <h3 style="letter-spacing: 3px; border-bottom: 1px solid var(--gold); display: inline-block; margin-bottom: 15px;">MUJERES</h3>
+            <p style="font-size: 0.8rem; font-weight: 600; margin-bottom: 10px; color: var(--gold);">COLOR BLANCO O BEIGE RESERVADO PARA LA NOVIA</p>
+            
+            <p style="font-size: 0.8rem; font-weight: 600; margin-bottom: 10px;">POR FAVOR <span style="color: #ff4d4d;">NO</span> USAR COLOR:</p>
+            <div style="margin-bottom: 15px;">
+                <span title="Verdes" style="display:inline-block; width:35px; height:35px; border-radius:50%; background:#2e7d32; border: 2px solid #ff4d4d; position:relative; margin: 0 5px;"><small style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); color:white;">✕</small></span>
+                <span title="Terracota" style="display:inline-block; width:35px; height:35px; border-radius:50%; background:#a0522d; border: 2px solid #ff4d4d; position:relative; margin: 0 5px;"><small style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); color:white;">✕</small></span>
+                <span title="Dorado" style="display:inline-block; width:35px; height:35px; border-radius:50%; background:#ffd700; border: 2px solid #ff4d4d; position:relative; margin: 0 5px;"><small style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); color:black;">✕</small></span>
+            </div>
+            <p style="font-size: 0.75rem; opacity: 0.8;">VERDES, TERRACOTA, DORADO (Reservados para el evento)</p>
+        </div>
+
+    </div>
 </section>
 
-<!-- UBICACIÓN -->
-<section class="section">
-<h2 class="section-title">Ubicación</h2>
-<div class="card">
-<i data-lucide="map-pin" color="#bfa37e" size="40"></i>
-<h3 style="margin-top:15px;">Ex-Hacienda Coscotitlán</h3>
-<p style="opacity:0.8;">Pachuca de Soto, Hidalgo</p>
-<a href="https://www.google.com/maps" target="_blank" class="btn">VER MAPA RECEPCIÓN</a>
+    <section class="section reveal">
+        <h2 class="section-title">Hospedaje</h2>
+        <div class="dress-card">
+            <img src="./viadorada.jpg" style="width:100px; height:100px; border-radius:50%; object-fit:cover; margin-bottom:15px;">
+            <h3>Grand Hotel & Casino Vía Dorada</h3>
+            <p style="font-size: 0.8rem; margin: 15px 0;">Código de Tarifa Especial:</p>
+            <strong style="letter-spacing: 2px;">BODAERICKYGABY</strong>
+            <div style="margin-top: 20px;">
+                <a href="#" class="btn btn-olive">Reservar</a>
+                <a href="#" class="btn btn-olive">Ver Mapa</a>
+            </div>
+        </div>
+    </section>
 
-<hr style="margin:35px 0;opacity:0.1;">
+    <section class="section reveal">
+        <h2 class="section-title">Mesa de Regalos</h2>
+        <div class="dress-card">
+            <p style="font-size: 0.85rem; margin-bottom: 15px;">LIVERPOOL CÓDIGO: <strong>51917310</strong></p>
+            <a href="https://mesaderegalos.liverpool.com.mx" target="_blank" class="btn">Ver Mesa</a>
+        </div>
+        
+        <h2 class="section-title" style="margin-top: 50px;">Confirmación</h2>
+        <div class="dress-card">
+            <p style="margin-bottom: 20px;">Favor de confirmar antes del 1 de Marzo</p>
+            <a href="https://wa.me/5217711234567" target="_blank" class="btn" style="background: #25d366; border-radius: 30px;"><i data-lucide="message-circle" size="16"></i> WhatsApp</a>
+        </div>
+    </section>
 
-<i data-lucide="car" color="#bfa37e" size="32"></i>
-<h4 style="font-size:0.9rem;color:var(--gold);margin-top:10px;">ESTACIONAMIENTO</h4>
-<p style="font-size:0.85rem;margin-top:10px;">Podrás dejar tu auto en Asados Don Abel.</p>
-<a href="https://www.google.com/maps" target="_blank" class="btn" style="background:transparent;border:1px solid var(--gold);color:var(--gold);">VER MAPA ESTACIONAMIENTO</a>
-<p style="font-size:0.8rem;opacity:0.7;margin-top:15px;font-style:italic;">* Habrá traslado al lugar.</p>
-</div>
-</section>
+    <section class="section reveal">
+        <h2 class="gold-text" style="font-size: 3rem;">Gracias por ser parte de nuestra Historia</h2>
+        <div style="overflow:hidden; padding: 40px 0;">
+            <div class="gallery-track">
+                <div class="gallery-item"><img src="img/Imagen4.jpg"></div>
+                <div class="gallery-item"><img src="img/Imagen5.jpg"></div>
+                <div class="gallery-item"><img src="img/Imagen6.jpg"></div>
+                <div class="gallery-item"><img src="img/Imagen7.jpg"></div>
+                <div class="gallery-item"><img src="img/Imagen4.jpg"></div>
+                <div class="gallery-item"><img src="img/Imagen5.jpg"></div>
+                <div class="gallery-item"><img src="img/Imagen6.jpg"></div>
+            </div>
+        </div>
+    </section>
 
-<!-- ITINERARIO -->
-<section class="section" style="background:rgba(0,0,0,0.2);">
-<h2 class="section-title">Itinerario</h2>
-<div class="itinerary-grid">
-<div class="event"><p class="event-time">3:30 PM</p><p class="event-name">Recepción</p></div>
-<div class="event"><p class="event-time">4:00 PM</p><p class="event-name">Ceremonia</p></div>
-<div class="event"><p class="event-time">5:00 PM</p><p class="event-name">Coctel</p></div>
-<div class="event"><p class="event-time">6:00 PM</p><p class="event-name">Banquete</p></div>
-<div class="event"><p class="event-time">8:00 PM</p><p class="event-name">Baile</p></div>
-<div class="event"><p class="event-time">2:00 AM</p><p class="event-name">Fin</p></div>
-</div>
-</section>
+    <footer style="padding: 40px; font-size: 0.7rem; opacity: 0.5;">
+        GABY & ERICK | 28.03.2026
+    </footer>
 
-<!-- MESA DE REGALOS -->
-<section class="section">
-<h2 class="section-title">Mesa de Regalos</h2>
-<div class="card">
-<i data-lucide="gift" color="#bfa37e" size="40"></i>
-<p style="margin:20px 0;">Tu presencia es nuestro mejor regalo, pero si deseas obsequiarnos algo:</p>
-<p><strong>CÓDIGO LIVERPOOL: 51917310</strong></p>
-<a href="https://mesaderegalos.liverpool.com.mx" target="_blank" class="btn">VER MESA DE REGALOS</a>
-</div>
-</section>
+    <script>
+        lucide.createIcons();
 
-<!-- CONFIRMACIÓN -->
-<section class="section" style="background:rgba(0,0,0,0.2);">
-<h2 class="section-title">Confirmación</h2>
-<div class="card">
-<p>Favor de confirmar su asistencia antes del 1 de Marzo.</p>
-<a href="https://wa.me/5217711234567" class="btn" style="background:#25d366;" target="_blank">
-<i data-lucide="message-circle"></i> WHATSAPP
-</a>
-</div>
-</section>
+        // Generador de puntos dorados (Confeti)
+        const container = document.getElementById('gold-points-container');
+        const numberOfPoints = 50; // Ajusta la cantidad de puntos
 
-<!-- GALERÍA -->
-<section class="section">
-<h2 class="section-title">Galería de fotos</h2>
-<div class="gallery-wrapper">
-<div class="gallery-track">
+        for (let i = 0; i < numberOfPoints; i++) {
+            const point = document.createElement('div');
+            point.classList.add('gold-point');
+            
+            // Tamaño aleatorio entre 3px y 8px
+            const size = Math.random() * 5 + 3; 
+            point.style.width = `${size}px`;
+            point.style.height = `${size}px`;
+            
+            // Posición aleatoria en la pantalla (fixed)
+            point.style.top = `${Math.random() * 100}vh`;
+            point.style.left = `${Math.random() * 100}vw`;
+            
+            // Opacidad aleatoria para dar profundidad
+            point.style.opacity = Math.random() * 0.5 + 0.3;
 
-<div class="gallery-item"><img src="img/Imagen4.jpg"></div>
-<div class="gallery-item"><img src="img/Imagen5.jpg"></div>
-<div class="gallery-item"><img src="img/Imagen6.jpg"></div>
-<div class="gallery-item"><img src="img/Imagen7.jpg"></div>
-<div class="gallery-item"><img src="img/Imagen8.jpg"></div>
+            container.appendChild(point);
+        }
 
-<div class="gallery-item"><img src="img/Imagen4.jpg"></div>
-<div class="gallery-item"><img src="img/Imagen5.jpg"></div>
-<div class="gallery-item"><img src="img/Imagen6.jpg"></div>
-<div class="gallery-item"><img src="img/Imagen7.jpg"></div>
-<div class="gallery-item"><img src="img/Imagen8.jpg"></div>
+        const weddingDate = new Date("March 28, 2026 15:30:00").getTime();
+        function updateClock(){
+            const now = new Date().getTime();
+            const diff = weddingDate - now;
+            if(diff > 0){
+                document.getElementById('days').innerText = Math.floor(diff/(1000*60*60*24)).toString().padStart(2,'0');
+                document.getElementById('hours').innerText = Math.floor((diff%(1000*60*60*24))/(1000*60*60)).toString().padStart(2,'0');
+                document.getElementById('mins').innerText = Math.floor((diff%(1000*60*60))/(1000*60)).toString().padStart(2,'0');
+                document.getElementById('secs').innerText = Math.floor((diff%(1000*60))/1000).toString().padStart(2,'0');
+            }
+        }
+        setInterval(updateClock, 1000); updateClock();
 
-</div>
-</div>
-</section>
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('active'); });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-<footer>GABY & ERICK | 28.03.2026</footer>
+// Musica de fondo
+        const music = 
+    document.getElementById('background-music');
+const musicBtn = 
+    document.getElementById('music-control');
 
-<script>
-lucide.createIcons();
+// Función para iniciar música y poner tiempo al azar
+function iniciarMusicaAutomaticamente() {
+    // 1. Ponemos el volumen suave para no asustar
+    music.volume = 
+        0.5;
+    
+    // 2. Elegimos un punto al azar si ya cargó la duración
+    if (music.duration) {
+        music.currentTime = 
+            Math.floor(Math.random() * music.duration);
+    }
 
-/* HERO AUTOMÁTICO */
-const heroSlides=document.querySelectorAll('.carousel-slide');
-let heroIndex=0;
-setInterval(()=>{
-heroSlides[heroIndex].classList.remove('active');
-heroIndex=(heroIndex+1)%heroSlides.length;
-heroSlides[heroIndex].classList.add('active');
-},5000);
+    // 3. Intentamos reproducir
+    const playPromise = 
+        music.play();
 
-/* CONTADOR */
-const weddingDate=new Date("March 28, 2026 15:30:00").getTime();
-function updateClock(){
-const now=new Date().getTime();
-const diff=weddingDate-now;
-if(diff>0){
-days.innerText=Math.floor(diff/(1000*60*60*24)).toString().padStart(2,'0');
-hours.innerText=Math.floor((diff%(1000*60*60*24))/(1000*60*60)).toString().padStart(2,'0');
-mins.innerText=Math.floor((diff%(1000*60*60))/(1000*60)).toString().padStart(2,'0');
-secs.innerText=Math.floor((diff%(1000*60))/1000).toString().padStart(2,'0');
-}}
-setInterval(updateClock,1000);
-updateClock();
-</script>
+    if (playPromise !== undefined) {
+        playPromise.then(() => {
+            // Si el navegador permitió el inicio
+            musicBtn.classList.add('music-playing');
+            actualizarIconoMusica(true);
+        }).catch(error => {
+            // El navegador bloqueó el autoplay, esperamos al primer clic
+            console.log("Esperando interacción para iniciar música...");
+        });
+    }
+}
 
+// Función de apoyo para los iconos
+function actualizarIconoMusica(isPlaying) {
+    const musicIcon = 
+        document.getElementById('music-icon');
+    musicIcon.setAttribute('data-lucide', isPlaying ? 'pause' : 'music');
+    lucide.createIcons();
+}
+
+// INTENTO DE AUTOPLAY AL PRIMER TOQUE
+// Esto soluciona el bloqueo de los navegadores
+document.body.addEventListener('click', () => {
+    if (music.paused && !musicBtn.classList.contains('manually-paused')) {
+        iniciarMusicaAutomaticamente();
+    }
+}, { once: true });
+
+// También intentamos al hacer scroll por si acaso
+window.addEventListener('scroll', () => {
+    if (music.paused && !musicBtn.classList.contains('manually-paused')) {
+        iniciarMusicaAutomaticamente();
+    }
+}, { once: true });
+
+// Función para el botón manual (mantenla)
+function toggleMusic() {
+    if (music.paused) {
+        music.play();
+        musicBtn.classList.add('music-playing');
+        musicBtn.classList.remove('manually-paused');
+        actualizarIconoMusica(true);
+    } else {
+        music.pause();
+        musicBtn.classList.remove('music-playing');
+        musicBtn.classList.add('manually-paused');
+        actualizarIconoMusica(false);
+    }
+}
+    </script>
 </body>
 </html>
